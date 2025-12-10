@@ -1,5 +1,6 @@
 /**
  * Camera Controller - Third-person follow camera with smooth damping
+ * IMPROVED VERSION - Better smoothness, cinematic motion, and no clipping
  */
 
 import * as THREE from 'three';
@@ -11,6 +12,8 @@ export class CameraController {
         this.target = null;
         this.currentPosition = new THREE.Vector3();
         this.currentLookAt = new THREE.Vector3();
+        this.velocity = new THREE.Vector3();
+        this.targetVelocity = new THREE.Vector3();
         
         this.init();
     }
@@ -43,7 +46,7 @@ export class CameraController {
     update(deltaTime) {
         if (!this.target) return;
 
-        const { followDistance, followHeight, lookAtHeight, smoothness } = CONFIG.camera;
+        const { followDistance, followHeight, lookAtHeight, smoothness, minHeight } = CONFIG.camera;
 
         const targetPosition = this.target.position.clone();
         const targetRotation = this.target.quaternion.clone();
@@ -51,18 +54,41 @@ export class CameraController {
         const forward = new THREE.Vector3(0, 0, 1);
         forward.applyQuaternion(targetRotation);
 
+        let dynamicDistance = followDistance;
+        let dynamicHeight = followHeight;
+        
+        if (this.target.velocity) {
+            const speed = Math.sqrt(
+                this.target.velocity.x * this.target.velocity.x +
+                this.target.velocity.z * this.target.velocity.z
+            );
+            
+            const speedFactor = Math.min(speed / 20, 1);
+            dynamicDistance = followDistance + speedFactor * 3;
+            dynamicHeight = followHeight + speedFactor * 1.5;
+        }
+
         const idealPosition = new THREE.Vector3();
         idealPosition.copy(targetPosition);
-        idealPosition.x -= forward.x * followDistance;
-        idealPosition.z -= forward.z * followDistance;
-        idealPosition.y = targetPosition.y + followHeight;
+        idealPosition.x -= forward.x * dynamicDistance;
+        idealPosition.z -= forward.z * dynamicDistance;
+        idealPosition.y = Math.max(targetPosition.y + dynamicHeight, minHeight || 3);
 
         const idealLookAt = new THREE.Vector3();
         idealLookAt.copy(targetPosition);
         idealLookAt.y += lookAtHeight;
+        idealLookAt.x += forward.x * 2;
+        idealLookAt.z += forward.z * 2;
 
-        this.currentPosition.lerp(idealPosition, smoothness);
-        this.currentLookAt.lerp(idealLookAt, smoothness);
+        const positionSmoothness = smoothness * (deltaTime * 60);
+        const lookAtSmoothness = smoothness * 1.5 * (deltaTime * 60);
+
+        this.currentPosition.lerp(idealPosition, Math.min(positionSmoothness, 0.15));
+        this.currentLookAt.lerp(idealLookAt, Math.min(lookAtSmoothness, 0.2));
+
+        if (this.currentPosition.y < (minHeight || 3)) {
+            this.currentPosition.y = minHeight || 3;
+        }
 
         this.camera.position.copy(this.currentPosition);
         this.camera.lookAt(this.currentLookAt);
@@ -74,6 +100,11 @@ export class CameraController {
 
     getPosition() {
         return this.camera.position;
+    }
+
+    setPosition(x, y, z) {
+        this.camera.position.set(x, y, z);
+        this.currentPosition.set(x, y, z);
     }
 }
 
