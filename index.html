@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Car Experience | Interactive Portfolio</title>
+    <link rel="stylesheet" href="/src/styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loading-screen">
+            <div class="loader">
+                <div class="loader-car"></div>
+                <div class="loader-text">Loading Experience...</div>
+                <div class="loader-progress">
+                    <div class="loader-progress-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WebGL Canvas Container -->
+        <canvas id="webgl-canvas"></canvas>
+
+        <!-- Header -->
+        <header id="header">
+            <div class="logo">
+                <span class="logo-icon">🚗</span>
+                <span class="logo-text">CarWorld</span>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn" data-section="about">About</button>
+                <button class="nav-btn" data-section="projects">Projects</button>
+                <button class="nav-btn" data-section="contact">Contact</button>
+            </nav>
+        </header>
+
+        <!-- HUD -->
+        <div id="hud">
+            <div class="instructions">
+                <div class="key-hint">
+                    <span class="keys">WASD</span> or <span class="keys">Arrow Keys</span> to drive
+                </div>
+                <div class="key-hint mobile-hint">
+                    Use joystick to control
+                </div>
+            </div>
+            <div class="speed-indicator">
+                <span class="speed-value">0</span>
+                <span class="speed-unit">km/h</span>
+            </div>
+        </div>
+
+        <!-- Mobile Controls -->
+        <div id="mobile-controls">
+            <div class="joystick-container" id="joystick">
+                <div class="joystick-base">
+                    <div class="joystick-stick"></div>
+                </div>
+            </div>
+            <div class="mobile-buttons">
+                <button class="mobile-btn" id="brake-btn">BRAKE</button>
+            </div>
+        </div>
+
+        <!-- Sound Toggle -->
+        <button id="sound-toggle" class="sound-btn">
+            <span class="sound-on">🔊</span>
+            <span class="sound-off">🔇</span>
+        </button>
+
+        <!-- Info Panels -->
+        <div id="panel-overlay" class="panel-overlay hidden">
+            <div class="panel-container">
+                <button class="panel-close">&times;</button>
+                
+                <!-- About Panel -->
+                <div class="panel" id="about-panel">
+                    <h2>About Me</h2>
+                    <div class="panel-content">
+                        <div class="avatar"></div>
+                        <p>Welcome to my interactive 3D portfolio! I'm a creative developer passionate about building immersive web experiences.</p>
+                        <p>This project showcases the power of Three.js and WebGL to create engaging, game-like websites that stand out.</p>
+                        <div class="skills">
+                            <span class="skill-tag">Three.js</span>
+                            <span class="skill-tag">WebGL</span>
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">React</span>
+                            <span class="skill-tag">Node.js</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Panel -->
+                <div class="panel" id="projects-panel">
+                    <h2>Projects</h2>
+                    <div class="panel-content">
+                        <div class="project-grid">
+                            <div class="project-card">
+                                <div class="project-icon">🎮</div>
+                                <h3>3D Game Engine</h3>
+                                <p>Custom WebGL game engine with physics</p>
+                            </div>
+                            <div class="project-card">
+                                <div class="project-icon">🌐</div>
+                                <h3>Interactive Portfolio</h3>
+                                <p>Immersive 3D web experiences</p>
+                            </div>
+                            <div class="project-card">
+                                <div class="project-icon">📱</div>
+                                <h3>Mobile Apps</h3>
+                                <p>Cross-platform applications</p>
+                            </div>
+                            <div class="project-card">
+                                <div class="project-icon">🤖</div>
+                                <h3>AI Integration</h3>
+                                <p>Machine learning web apps</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Panel -->
+                <div class="panel" id="contact-panel">
+                    <h2>Contact</h2>
+                    <div class="panel-content">
+                        <p>Let's build something amazing together!</p>
+                        <div class="contact-links">
+                            <a href="mailto:hello@example.com" class="contact-link">
+                                <span class="contact-icon">📧</span>
+                                <span>hello@example.com</span>
+                            </a>
+                            <a href="https://github.com" target="_blank" class="contact-link">
+                                <span class="contact-icon">💻</span>
+                                <span>GitHub</span>
+                            </a>
+                            <a href="https://linkedin.com" target="_blank" class="contact-link">
+                                <span class="contact-icon">💼</span>
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="https://twitter.com" target="_blank" class="contact-link">
+                                <span class="contact-icon">🐦</span>
+                                <span>Twitter</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interaction Hint -->
+        <div id="interaction-hint" class="hidden">
+            <span class="hint-text">Press SPACE to interact</span>
+        </div>
+
+        <!-- WebGL Not Supported Message -->
+        <div id="webgl-error" class="hidden">
+            <div class="error-content">
+                <h2>WebGL Not Supported</h2>
+                <p>Your browser or device doesn't support WebGL, which is required for this experience.</p>
+                <p>Please try using a modern browser like Chrome, Firefox, or Edge.</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
